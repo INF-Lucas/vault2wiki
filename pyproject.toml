@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vault2wiki"
+version = "0.1.0"
+description = "An Obsidian-friendly, public-safe starter kit for compiling raw notes into an LLM-managed wiki."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Open Source Template" }]
+dependencies = [
+  "PyMuPDF>=1.24.0",
+  "anthropic>=0.34.0",
+  "openai>=1.30.0",
+  "python-dotenv>=1.0.1",
+  "pyyaml>=6.0",
+  "watchdog>=4.0.0",
+]
+
+[project.scripts]
+vault2wiki = "vault2wiki.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+vault2wiki = ["prompts/*.md"]

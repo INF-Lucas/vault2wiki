@@ -1,0 +1,97 @@
+vault_root: .
+
+paths:
+  raw_dir: raw
+  wiki_dir: wiki
+  outbox_dir: outbox
+  assets_dir: assets
+  state_file: .vault2wiki/state.json
+  fts_db: .vault2wiki/fts.sqlite3
+
+llm:
+  # mock: offline demo mode
+  # openai: native OpenAI or any OpenAI-compatible endpoint via base_url
+  # anthropic: Anthropic Messages API
+  provider: mock
+
+  openai:
+    # Example placeholder. Replace with your own model when you use a real provider.
+    model: gpt-4o-mini
+    # Set this when using an OpenAI-compatible provider.
+    base_url: null
+    # Keep real keys in your local vault .env, not in the repository.
+    api_key_env: OPENAI_API_KEY
+    fallback:
+      model: null
+      base_url: null
+      api_key_env: OPENAI_FALLBACK_API_KEY
+
+  anthropic:
+    # Example placeholder. Replace with your own model when needed.
+    model: claude-3-5-sonnet-latest
+    api_key_env: ANTHROPIC_API_KEY
+
+compile:
+  debounce_seconds: 2
+  max_source_chars: 50000
+  include_existing_titles_max: 200
+  overwrite_existing: true
+
+  gate:
+    enabled: true
+    mode: auto_merge
+    staging_dir: outbox/_staging
+    rejected_dir: outbox/_rejected
+    min_body_chars: 400
+    llm:
+      enabled: true
+      min_score: 70
+      on_error: approve_with_needs_review
+
+  pdf:
+    enabled: true
+    max_pages: 30
+
+  index:
+    enabled: true
+    path: wiki/_index.md
+    recent_limit: 50
+    group_by_folder: true
+
+  health:
+    enabled: true
+    path: wiki/_health.md
+    max_items_per_section: 200
+
+  moc:
+    enabled: true
+    dir: wiki/moc
+    top_tag_limit: 30
+
+  glossary:
+    enabled: true
+    dir: wiki/glossary
+    min_refs: 2
+    max_links_per_term: 200
+    term_tag: term
+    ignore_terms: []
+    max_term_len: 40
+
+  verify:
+    enabled: true
+    path: wiki/_verify.md
+
+  tags:
+    enabled: true
+    allowlist: []
+    mappings:
+      llm: AI
+      ai: AI
+    keep: [approved, needs_review, rejected, web, paper, book, note]
+    max_topic_tags: 5
+
+query:
+  max_context_notes: 8
+  max_note_chars: 8000
+  search:
+    mode: fts
